@@ -25,6 +25,7 @@ export class PostCreateComponent implements OnInit {
     // content: form.value.content}
     // this.postCreated.emit(post)//tym emitujemy to property
     this.postsSerivce.addPost(form.value.title, form.value.content);
+    form.resetForm();
   }
   // onAddPost(two way binding version){
   //   const post:Post= {
