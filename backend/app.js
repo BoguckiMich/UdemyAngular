@@ -7,7 +7,8 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://pichael:UpH0Xsu1x1KSZjUv@cluster0.abvjm.mongodb.net/posts?retryWrites=true&w=majority"
+    "mongodb+srv://pichael:UpH0Xsu1x1KSZjUv@cluster0.abvjm.mongodb.net/posts?retryWrites=true&w=majority",
+    { useUnifiedTopology: true, useNewUrlParser: true }
   )
   .then(() => {
     console.log("connected to db");
@@ -41,12 +42,20 @@ app.post("/api/posts", (req, res, next) => {
   res.status(201).json({ message: "blah" });
 });
 
-app.use("/api/posts", (req, res, next) => {
+app.get("/api/posts", (req, res, next) => {
   Post.find().then((documents) => {
     res.status(200).json({
       message: "Posts fetched succesfully",
       posts: documents,
     });
+  });
+});
+
+app.delete("/api/posts/:id", (req, res, next) => {
+  console.log("something");
+  Post.deleteOne({ _id: req.params.id }).then((result) => {
+    console.log(result);
+    res.status(200).json({ message: "Post deleted!" });
   });
 });
 
