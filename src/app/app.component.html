@@ -1,5 +1,7 @@
 <app-header></app-header>
 <main>
-  <app-post-create (postCreated)="onPostAdded($event)"></app-post-create> <!-- kiedy emitujemy property to musimy napisac kiedy bedzie wywolywane-->
-  <app-post-list [posts]="storedPosts"></app-post-list> <!-- przekazujemy liste postow od rodzica do dziecka -->
+  <app-post-create></app-post-create>
+  <app-post-list></app-post-list>
+  <!-- <app-post-create (postCreated)="onPostAdded($event)"></app-post-create> kiedy emitujemy property to musimy napisac kiedy bedzie wywolywane -->
+  <!-- <app-post-list [posts]="storedPosts"></app-post-list> przekazujemy liste postow od rodzica do dziecka -->
 </main>
