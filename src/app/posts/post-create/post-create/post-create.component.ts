@@ -10,11 +10,13 @@ import { Content } from '@angular/compiler/src/render3/r3_ast';
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.css'],
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent {
   enteredTitle = '';
   enteredContent = '';
   // @Output ()
   // postCreated = new EventEmitter<Post>(); //potrzebne do wyemitowania property do innego component
+
+  constructor(public postsSerivce: PostsService) {}
 
   onAddPost(form: NgForm) {
     if (form.invalid) {
@@ -33,8 +35,4 @@ export class PostCreateComponent implements OnInit {
   //     content:this.enteredContent}
   //   this.postCreated.emit(post)//tym emitujemy to property
   // }
-
-  constructor(public postsSerivce: PostsService) {}
-
-  ngOnInit(): void {}
 }
