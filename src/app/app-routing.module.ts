@@ -10,6 +10,7 @@ const routes: Routes = [
     component: PostListComponent,
   },
   { path: 'create', component: PostCreateComponent },
+  { path: 'edit/:postId', component: PostCreateComponent },
 ];
 
 @NgModule({
