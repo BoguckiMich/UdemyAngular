@@ -16,6 +16,7 @@ export class PostCreateComponent implements OnInit {
   private mode = 'create';
   private postId: string;
   post: Post;
+  isLoading = false;
   // @Output ()
   // postCreated = new EventEmitter<Post>(); //potrzebne do wyemitowania property do innego component
 
@@ -32,6 +33,7 @@ export class PostCreateComponent implements OnInit {
     // title: form.value.title, to tylko w przypadku emittowania
     // content: form.value.content}
     // this.postCreated.emit(post)//tym emitujemy to property
+    this.isLoading = true;
     if (this.mode === 'create') {
       this.postsService.addPost(form.value.title, form.value.content);
     } else {
@@ -54,9 +56,9 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
-        // this.isLoading = true;
+        this.isLoading = true;
         this.postsService.getSinglePost(this.postId).subscribe((postData) => {
-          // this.isLoading = false;
+          this.isLoading = false;
           this.post = {
             id: postData._id,
             title: postData.title,
