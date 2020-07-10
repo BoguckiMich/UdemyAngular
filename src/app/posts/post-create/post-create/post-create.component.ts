@@ -1,9 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 import { Post } from '../../post.model';
-import { NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-post-create',
@@ -17,6 +18,7 @@ export class PostCreateComponent implements OnInit {
   private postId: string;
   post: Post;
   isLoading = false;
+  form: FormGroup;
   // @Output ()
   // postCreated = new EventEmitter<Post>(); //potrzebne do wyemitowania property do innego component
 
@@ -25,8 +27,8 @@ export class PostCreateComponent implements OnInit {
     public route: ActivatedRoute
   ) {}
 
-  onSavePost(form: NgForm) {
-    if (form.invalid) {
+  onSavePost() {
+    if (this.form.invalid) {
       return;
     }
     // const post:Post= {
@@ -35,15 +37,15 @@ export class PostCreateComponent implements OnInit {
     // this.postCreated.emit(post)//tym emitujemy to property
     this.isLoading = true;
     if (this.mode === 'create') {
-      this.postsService.addPost(form.value.title, form.value.content);
+      this.postsService.addPost(this.form.value.title, this.form.value.content);
     } else {
       this.postsService.updatePost(
         this.postId,
-        form.value.title,
-        form.value.content
+        this.form.value.title,
+        this.form.value.content
       );
     }
-    form.resetForm();
+    this.form.reset();
   }
   // onAddPost(two way binding version){
   //   const post:Post= {
@@ -52,6 +54,12 @@ export class PostCreateComponent implements OnInit {
   //   this.postCreated.emit(post)//tym emitujemy to property
   // }
   ngOnInit() {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      content: new FormControl(null, { validators: [Validators.required] }),
+    });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
@@ -64,6 +72,10 @@ export class PostCreateComponent implements OnInit {
             title: postData.title,
             content: postData.content,
           };
+          this.form.setValue({
+            title: this.post.title,
+            content: this.post.content,
+          });
         });
       } else {
         this.mode = 'create';
