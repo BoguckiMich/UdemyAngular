@@ -4,7 +4,8 @@ import { Post } from '../../post.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostsService } from '../../post.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { throwToolbarMixedModesError } from '@angular/material/toolbar';
+
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -19,6 +20,7 @@ export class PostCreateComponent implements OnInit {
   post: Post;
   isLoading = false;
   form: FormGroup;
+  imagePreview: string;
   // @Output ()
   // postCreated = new EventEmitter<Post>(); //potrzebne do wyemitowania property do innego component
 
@@ -47,6 +49,17 @@ export class PostCreateComponent implements OnInit {
     }
     this.form.reset();
   }
+
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ image: file });
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
   // onAddPost(two way binding version){
   //   const post:Post= {
   //     title: this.enteredTitle,
@@ -59,6 +72,10 @@ export class PostCreateComponent implements OnInit {
         validators: [Validators.required, Validators.minLength(3)],
       }),
       content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType],
+      }),
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
